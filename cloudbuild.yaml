@@ -9,23 +9,8 @@ options:
   machineType: "E2_HIGHCPU_32"
 
 steps:
-  # STEP 1: Java Compilation Step (Crucial for SonarQube Java analysis)
-  # Elasticsearch uses Maven, so we'll use a Maven builder image.
-  # This step will compile your Java code, producing .class files in target/classes.
-  - id: 'Compile Java Project'
-    name: 'maven:3-openjdk-17' # Recommended: Use a specific, stable Maven image with Java 17
-    entrypoint: 'mvn'
-    args:
-      - 'clean'
-      - 'install'
-      - '-DskipTests' # Skip tests to speed up the build for scanning purposes
-      - '-Dmaven.wagon.http.pool=false' # Optional: Workaround for some Maven/HTTP issues
-      - '-Dmaven.wagon.http.retryHandler.count=3' # Optional: Retry downloads
-      - '-Dmaven.repo.local=./.m2' # Optional: Cache Maven dependencies in the current workspace
-
   # STEP 2: SonarScanner Analysis Step
-  - id: 'Run SonarScanner'
-    name: 'sonarsource/sonar-scanner-cli'
+  - name: 'sonarsource/sonar-scanner-cli'
     entrypoint: 'bash'
     args:
       - '-c'
